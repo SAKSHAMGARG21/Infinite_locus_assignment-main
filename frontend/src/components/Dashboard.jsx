@@ -15,7 +15,7 @@ const Dashboard = () => {
     }
     fetchEvents();
 
-    socketRef.current = io("http://localhost:3000");
+    socketRef.current = io(process.env.REACT_APP_SOCKET_URL);
 
     socketRef.current.on("registrations", (data) => {
       setRegistrations((prev) => ({ ...prev, [data.eventId]: data.count }));
