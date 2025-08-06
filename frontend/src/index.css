@@ -1,0 +1,26 @@
+@import "tailwindcss";
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+input, select, button {
+  margin: 5px;
+  padding: 8px;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
