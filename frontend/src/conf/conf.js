@@ -1,4 +1,5 @@
 const conf = {
-    bkurl: String(import.meta.env.REACT_APP_API_URL)
+    bkurl: String(import.meta.env.VITE_API_URL),
+    skurl: String(import.meta.env.VITE_SOCKET_URL)
 }
 export default conf;

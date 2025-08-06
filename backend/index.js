@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
 });
 
 global.io = io;
-
+// req.app.get('io') = io; // Make io available in routes
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);

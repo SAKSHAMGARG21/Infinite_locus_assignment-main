@@ -4,8 +4,9 @@ import auth from '../middleware/auth.js';
 import Event from '../models/Event.js';
 import Registration from '../models/Registration.js';
 import User from '../models/User.js';
+import { console } from 'inspector';
 
-router.get('/', auth, async (req, res) => {
+router.get('/',auth, async (req, res) => {
     try {
         const events = await Event.find().populate('organizer', 'username');
         res.json(events);
@@ -15,10 +16,11 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/',auth, async (req, res) => {
     try {
         const { name, description, date, location } = req.body;
         const organizer = await User.findById(req.user.id);
+        console.log(organizer);
         if (organizer.role !== 'ORGANIZER') {
             return res.status(401).json({ msg: 'User not authorized' });
         }
@@ -37,7 +39,7 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
-router.post('/:id/register', auth, async (req, res) => {
+router.post('/:id/register', auth,async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
         if (!event) {
