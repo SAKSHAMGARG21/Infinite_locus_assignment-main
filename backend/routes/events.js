@@ -19,6 +19,7 @@ router.get('/',auth, async (req, res) => {
 router.post('/',auth, async (req, res) => {
     try {
         const { name, description, date, location } = req.body;
+        console.log(name, description, date, location);
         const organizer = await User.findById(req.user.id);
         console.log(organizer);
         if (organizer.role !== 'ORGANIZER') {
