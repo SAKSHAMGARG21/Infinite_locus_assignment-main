@@ -1,50 +1,44 @@
+// backend/index.js
 import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
 import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
 import http from 'http';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
+import authRoutes from './routes/auth.js';
+import eventRoutes from './routes/events.js';
 
-dotenv.config();
+dotenv.config({});
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin:process.env.CORS,
-    methods: ["GET", "POST"]
+    origin: process.env.CORS_ORIGIN, // frontend origin
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
-app.use(bodyParser.json());
-app.use(cors({
-  origin:process.env.CORS,
-  credentials:true}
+// Middleware
+app.use(cors(
+  {
+    origin: process.env.CORS_ORIGIN, // frontend origin
+    credentials: true
+  }
 ));
+app.use(express.json());
 
-mongoose.connect(process.env.DATABASE_URL);
-
-const connection = mongoose.connection;
-connection.once('open', () => {
-  console.log('MongoDB database connection established successfully');
-});
-
-import authRoutes from './routes/auth.js';
-import eventRoutes from './routes/events.js';
-
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
+app.use('/api/events', eventRoutes(io));
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
-
-global.io = io;
-// req.app.get('io') = io; // Make io available in routes
+// Connect MongoDB and start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server is running on port: ${PORT}`);
-});
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}).catch(err => console.error(err));
+
+export { io };
